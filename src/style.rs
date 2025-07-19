@@ -1,5 +1,3 @@
-
-
 /// Returns a formatted date string for the given chrono::DateTime.
 pub fn format_date<T>(dt: &chrono::DateTime<T>) -> String
 where
