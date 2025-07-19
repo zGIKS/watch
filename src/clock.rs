@@ -67,6 +67,7 @@ impl Clock {
             if matrix[i] {
                 let dx = (i % DIGIT_SIZE) as i32;
                 let dy = (i / DIGIT_SIZE) as i32;
+                // Color is handled in main.rs
                 ncurses::mvwaddstr(win, y + dy, x + dx, ch);
             }
         }
