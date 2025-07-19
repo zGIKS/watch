@@ -1,7 +1,7 @@
-
-mod clock;
 mod digits;
+mod clock;
 mod style;
+mod colors;
 
 use std::ffi::CString;
 use libc;
@@ -17,6 +17,7 @@ fn main() {
         libc::setlocale(libc::LC_ALL, locale.as_ptr());
     }
     initscr();
+    colors::init_colors();
     noecho();
     curs_set(CURSOR_VISIBILITY::CURSOR_INVISIBLE);
     keypad(stdscr(), true);
@@ -35,6 +36,8 @@ fn main() {
         let minute = now.minute();
         let second = now.second();
 
+
+        // Draw digits without color
         clock.draw_time(stdscr(), hour, minute, second);
 
         // Draw the date below the clock, centered
