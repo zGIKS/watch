@@ -8,6 +8,7 @@ use libc;
 use ncurses::*;
 use chrono::{Local, Timelike};
 use clock::Clock;
+use style::{HourFormat, HorizontalAlign, VerticalAlign};
 
 fn main() {
     // Initialize locale for UTF-8
@@ -23,7 +24,8 @@ fn main() {
     timeout(100);
 
     // You can change the style index (0..7) to select the digit style
-    let clock = Clock::new(2, 2, 3);
+    // Example: style 0 (█), 24h format, centered horizontally and vertically
+    let clock = Clock::new(0, HourFormat::H12, HorizontalAlign::Center, VerticalAlign::Center);
 
     loop {
         erase();
@@ -35,8 +37,17 @@ fn main() {
 
         clock.draw_time(stdscr(), hour, minute, second);
 
-        mvprintw(10, 2, &format!("Time: {:02}:{:02}:{:02}", hour, minute, second));
-        mvprintw(11, 2, "Press 'q' or ESC to exit");
+        // Draw the date below the clock, centered
+        let (max_y, max_x) = {
+            let mut y = 0;
+            let mut x = 0;
+            getmaxyx(stdscr(), &mut y, &mut x);
+            (y, x)
+        };
+        let date_str = style::format_date(&now);
+        let date_x = (max_x.saturating_sub(date_str.len() as i32)) / 2;
+        let date_y = (max_y / 2) + 4; // 4 lines below vertical center (clock is 5 lines tall)
+        mvprintw(date_y, date_x.max(0), &date_str);
 
         refresh();
 
